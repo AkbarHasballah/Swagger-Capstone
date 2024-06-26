@@ -8,7 +8,7 @@ info:
     url:  
   version: 1.0.11
 servers:
-  - url: https://localhost:5000
+  - url: https://comment.yourcodeapp.com
 externalDocs:
   description: Repositori Backend Comment        
   url: https://github.com/CapstoneSIB-Comment/Backend
@@ -78,7 +78,7 @@ components:
         photo: satria.jpg
         name: Satria
         headTitle: Front End Developer
-        phone: 081221224553
+        phone: "081221224553"
 
     Event:
       type: object
@@ -110,6 +110,11 @@ components:
         endDate: 2024-06-25T00:00:00.000Z
         maxParticipants: 20
         image: https://i.pravatar.cc/300
+    Eventupdate:
+      type: object
+      properties:
+        description:
+          type: string
 
     Comment:
       type: object
@@ -121,9 +126,7 @@ components:
         usersId:
           type: string
       example:
-        eventId: d518a867-6e93-4585-b180-4fd81ac86212
         content: Ini adalah komentar baru
-        usersId: caa7f9a3-74a4-4e9f-a78b-0a4528f0763c
 
   securitySchemes:
     token:
@@ -189,7 +192,7 @@ paths:
         '200':
           description: Successful retrieval of users
 
-    post:
+    put:
       tags:
         - users
       summary: Update users
@@ -204,25 +207,16 @@ paths:
       responses:
         '200':
           description: users updated successfully
-
-  /api/users/{id}:
     delete:
       tags:
         - users
       summary: Delete users By ID
       security:
         - token: []
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: users deleted successfully
-
-  /api/auth/password:
+  /api/users/password:
     put:
       tags:
         - users
@@ -243,6 +237,8 @@ paths:
       responses:
         '200':
           description: Password changed successfully
+
+    
 
   /api/users/me:
     get:
@@ -308,10 +304,16 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Eventupdate'
       responses:
         '200':
           description: Event edited successfully
-
+  
     delete:
       tags:
         - Post Event & News
@@ -338,17 +340,23 @@ paths:
           description: Trending posts retrieved successfully
 
 # ------------------------- Joint Event
-  /api/user-join-event:
+  /api/events/{id}/join:
     post:
       tags:
         - Joint Event
       summary: Join Event
       security:
         - token: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: User joined event successfully
-
+  /api/events:
     get:
       tags:
         - Joint Event
@@ -359,7 +367,7 @@ paths:
         '200':
           description: List of users joined posts retrieved successfully
 
-  /api/user-join-event/{id}:
+  /api/events/{id}:
     get:
       tags:
         - Joint Event
@@ -376,25 +384,37 @@ paths:
         '200':
           description: User joined event retrieved successfully
 
-  /api/join/leave:
-    post:
+  /api/events/{id}/leave:
+    delete:
       tags:
         - Joint Event
       summary: Leave Event
       security:
         - token: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: User left event successfully
 
 # ------------------------- Comments
-  /api/comments:
+  /api/posts/{id}/comments/:
     post:
       tags:
         - Comments
       summary: Post Comments
       security:
         - token: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -404,8 +424,7 @@ paths:
       responses:
         '200':
           description: Comment posted successfully
-
-  /api/comments/{id}:
+  /api/posts/{id}/comments/{id}:
     put:
       tags:
         - Comments
